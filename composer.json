@@ -1,7 +1,6 @@
 {
     "name": "flamix/app24-core",
     "description": "Easy way to create App24 Marketplace App",
-    "license": "license",
     "authors": [
         {
             "name": "Roman Shkabko",
