@@ -9,7 +9,7 @@
             "homepage": "flamix.info"
         }
     ],
-    "homepage": "https://github.com/rshkabko/app24",
+    "homepage": "https://github.com/rshkabko/app24-core",
     "require": {
         "flamix/rest24-php-sdk": "dev-master",
         "flamix/settings": "dev-master"
@@ -25,22 +25,21 @@
             "src/helpers.php"
         ],
         "psr-4": {
-            "Flamix\\App24\\": "src/",
-            "Flamix\\B24App\\": "src/"
+            "Flamix\\App24Core\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Flamix\\App24\\Tests\\": "tests"
+            "Flamix\\App24Core\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Flamix\\App24\\App24ServiceProvider"
+                "Flamix\\App24Core\\App24ServiceProvider"
             ],
             "aliases": {
-                "App24": "Flamix\\App24\\Facades\\App24"
+                "App24Core": "Flamix\\App24Core\\Facades\\App24Core"
             }
         }
     }
