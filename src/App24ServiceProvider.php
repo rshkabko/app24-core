@@ -1,6 +1,6 @@
 <?php
 
-namespace Flamix\App24;
+namespace Flamix\App24Core;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;

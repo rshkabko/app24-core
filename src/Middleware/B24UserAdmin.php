@@ -1,6 +1,6 @@
 <?php
 
-namespace Flamix\App24\Middleware;
+namespace Flamix\App24Core\Middleware;
 
 use Closure;
 use Flamix\App24Core\Controllers\Bitrix24\UserController;
