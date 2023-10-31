@@ -47,7 +47,7 @@ class PortalController extends Controller
         $domain = $data['domain'] ?? $data['DOMAIN'] ?? $default;
 
         if (empty($domain))
-            throw new FxException(trans('flamix::msg.portal_empty_domain'));
+            throw new FxException(trans('flamix::error.portal_empty_domain'));
 
         return $domain;
     }
@@ -68,7 +68,7 @@ class PortalController extends Controller
             return $id;
         }
 
-        throw new FxException(trans('flamix::msg.portal_empty_ID') . $domain);
+        throw new FxException(trans('flamix::error.portal_empty_ID') . $domain);
     }
 
     /**
@@ -138,7 +138,7 @@ class PortalController extends Controller
     {
         $portal_id = $portal_id ?: Portals::getId();
 
-        (new Portals)->where('id', $portal_id)->update(['admin_only' => !self::isAdminOnly($portal_id)]);
+        app(Portals::class)->where('id', $portal_id)->update(['admin_only' => !self::isAdminOnly($portal_id)]);
 
         CacheController::clearPortalCache($portal_id);
         return ['status' => 'success', 'onlyAdmin' => self::isAdminOnly($portal_id)];

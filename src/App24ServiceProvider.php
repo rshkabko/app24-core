@@ -12,14 +12,20 @@ class App24ServiceProvider extends ServiceProvider
     {
         // Register Middleware
         $router->aliasMiddleware('B24App', Middleware\B24App::class);
-        $router->aliasMiddleware('B24Settings', Middleware\B24Settings::class);
 
         // Need User
         $router->aliasMiddleware('B24User', Middleware\B24User::class);
         $router->aliasMiddleware('B24UserAdmin', Middleware\B24UserAdmin::class);
 
+        // Register grouped Middleware "app24"
+        $this->app->booted(function () use ($router) {
+            $router->pushMiddlewareToGroup('app24', Middleware\B24App::class);
+            $router->pushMiddlewareToGroup('app24', Middleware\B24User::class);
+            $router->pushMiddlewareToGroup('app24', Middleware\B24UserAdmin::class);
+        });
+
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'flamix');
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'app24-core');
 
         $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
@@ -71,6 +77,8 @@ class App24ServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../database/migrations/' => database_path('migrations'),
         ], 'migrations');
+
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         // Registering package commands.
         $this->commands([

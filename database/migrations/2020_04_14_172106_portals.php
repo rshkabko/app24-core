@@ -26,6 +26,7 @@ class Portals extends Migration
             $table->string('refresh_token');
             $table->timestamp('expires')->nullable();
             $table->string('lang')->nullable();
+            $table->tinyInteger('admin_only')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

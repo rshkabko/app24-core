@@ -52,7 +52,7 @@ class B24User
             $session = self::getSessions();
 
         if (!isset($session))
-            throw new FxException(trans('flamix::msg.b24user_open_portal_in_b24'), 444);
+            throw new FxException(trans('flamix::error.b24user_open_portal_in_b24'), 444);
 
         // Secure issue
         if (isset(request()->DOMAIN) && !isset(request()->member_id) && request()->DOMAIN !== $session['domain'])
@@ -86,7 +86,7 @@ class B24User
     private static function getB24Auth(array $session): Bitrix24
     {
         $obB24App = new Bitrix24(false);
-        $portal_scope = config('b24app.access.scope');
+        $portal_scope = config('app24.access.scope');
 
         if (!$portal_scope)
             throw new FxException('Cant find portal whith code ' . config('app.name') . ' and domain ' . $session['domain']);
@@ -97,8 +97,8 @@ class B24User
             $scope = [$portal_scope];
 
         $obB24App->setApplicationScope($scope);
-        $obB24App->setApplicationId(config('b24app.access.id'));
-        $obB24App->setApplicationSecret(config('b24app.access.secret'));
+        $obB24App->setApplicationId(config('app24.access.id'));
+        $obB24App->setApplicationSecret(config('app24.access.secret'));
 
         $obB24App->setDomain($session['domain']);
         $obB24App->setMemberId($session['member_id']);
@@ -119,7 +119,7 @@ class B24User
     {
         $request = request()->all();
         if (empty($session) && (!isset($request['DOMAIN']) || !isset($request['member_id'])))
-            throw new FxException(trans('flamix::msg.b24user_open_portal_in_b24'), 444);
+            throw new FxException(trans('flamix::error.b24user_open_portal_in_b24'), 444);
 
         if (empty($session))
             $session = [
@@ -146,7 +146,7 @@ class B24User
     {
         $session = request()->session()->all();
         if (!isset($session['domain']) || !isset($session['member_id']) || !isset($session['access_token']) || !isset($session['refresh_token']))
-            throw new FxException(trans('flamix::msg.b24user_cant_take_session'));
+            throw new FxException(trans('flamix::error.b24user_cant_take_session'));
 
         return $session;
     }

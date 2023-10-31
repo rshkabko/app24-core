@@ -3,6 +3,8 @@
 return [
     'app' => [
         'name' => env('APP_NAME'),
+        'def_lang' => 'en',
+        'views' => \Flamix\App24Core\Controllers\ViewsController::class,
     ],
     'access' => [
         'id' => env('B24_APP_ID', false),

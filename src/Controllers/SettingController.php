@@ -28,7 +28,7 @@ class SettingController extends Controller
     /**
      * Save setting to DB.
      *
-     * @param string $key
+     * @param string|array $key
      * @param mixed $value
      */
     public static function save(string|array $key, mixed $value = false): void
@@ -41,7 +41,7 @@ class SettingController extends Controller
     }
 
     /**
-     * Delete serring by key or keys.
+     * Delete setting by key or keys.
      *
      * @param string|array $keys
      * @return void
@@ -82,14 +82,14 @@ class SettingController extends Controller
                 Setting::set($key, filter_var($value, FILTER_SANITIZE_STRING));
         }
 
-        LogController::portal(trans('flamix::msg.log_setting_saving'), $settings);
+        LogController::portal(trans('flamix::error.log_setting_saving'), $settings);
         // Final action - https://github.com/anlutro/laravel-settings/blob/master/src/SaveMiddleware.php
         setting()->save();
 
         return [
             'data' => $request->all(),
             'status' => 'success',
-            'msg' => trans('flamix::msg.setting_saved'),
+            'msg' => trans('flamix::error.setting_saved'),
         ];
     }
 

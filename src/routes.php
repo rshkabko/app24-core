@@ -8,8 +8,8 @@ use Flamix\App24Core\Controllers;
 /**
  * WEB
  */
-Route::group(['prefix' => 'b24app', 'middleware' => ['web']], function () {
-    Route::any('installing', [Controllers\InstallController::class, 'installing']);
+Route::group(['prefix' => 'app24', 'middleware' => ['web']], function () {
+    Route::any('install', [Controllers\InstallController::class, 'install'])->name('app24.install');
 });
 
 /**
@@ -17,18 +17,6 @@ Route::group(['prefix' => 'b24app', 'middleware' => ['web']], function () {
  *
  * API routing didn't work with SESSION
  */
-Route::group(['prefix' => 'b24app', 'middleware' => ['api', 'throttle:600,1', 'lang']], function () {
-    // Событие удаление портала (ранее, мы регистрировали обработчик на удаления по этому URL)
-    Route::post('uninstall', [Controllers\InstallController::class, 'destroy']);
-
-    /*
-     * Для сохранения настроек я использую этот пакет - https://github.com/anlutro/laravel-settings
-     * Естественно, я его немного переделал при вызове контроллеров :)
-     */
-    Route::group(['prefix' => 'settings', 'middleware' => ['B24App', 'B24Settings', 'CheckApiToken', 'isAccessedType']], function () {
-        Route::any('save', [Controllers\SettingController::class, 'saveSettings']);
-        Route::any('delete', [Controllers\SettingController::class, 'deleteSettings']);
-        Route::get('all', [Controllers\SettingController::class, 'getAllSettings']);
-        Route::get('get', [Controllers\SettingController::class, 'getSetting']);
-    });
+Route::group(['prefix' => 'app24', 'middleware' => ['api', 'throttle:600,1']], function () {
+    Route::get('uninstall/{hash}', [Controllers\InstallController::class, 'destroy'])->name('app24.uninstall');
 });

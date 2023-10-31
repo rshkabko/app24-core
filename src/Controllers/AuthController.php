@@ -23,8 +23,7 @@ class AuthController extends Controller
      */
     public function insertOrUpdateOAuth(array|bool|null $data = false): int
     {
-        if (empty(config('app.name')))
-            throw new FxException(trans('flamix::msg.portal_env__app_name_bugs'));
+        throw_if(empty(config('app.name')), FxException::class, trans('flamix::error.portal_env__app_name_bugs'));
 
         $insert = self::getAuthFields($data);
         $search = ['domain' => $insert['domain']];
@@ -39,7 +38,7 @@ class AuthController extends Controller
 
         if ($portal_id) {
             // Действующий портал
-            $search['id'] = (int)$portal_id;
+            $search['id'] = $portal_id;
 
             // Обновляем только авторизационные ключи, иначе перепишет не по _pay
             $insert = [
@@ -50,14 +49,13 @@ class AuthController extends Controller
                 'expires' => $insert['expires'],
             ];
         } else {
-            // Новый портал
+            // New portal
             $search['app_code'] = $insert['app_code'];
-            $insert['admin_only'] = config('b24app.access.admin_only'); // Только для админа?
+            $insert['admin_only'] = config('app24.access.admin_only'); // Only admin?
         }
 
-        $id = (int)app(Portals::class)->updateOrCreate($search, $insert)->id;
-        if (!$id)
-            throw new FxException(trans('flamix::msg.portal_cant_create_update'));
+        $id = intval(app(Portals::class)->updateOrCreate($search, $insert)->id ?? 0);
+        throw_unless($id, FxException::class, trans('flamix::error.portal_cant_create_update'));
 
         unset($insert, $data, $portal_id, $search);
         CacheController::clearPortalCache($id);
@@ -79,10 +77,10 @@ class AuthController extends Controller
     {
         $obB24App = new Bitrix24(false);
         $scope = self::prepareScope($portalData->scope);
-        $app_id = !empty($portalData->app_id) ? $portalData->app_id : config('b24app.access.id');
-        $app_secret = !empty($portalData->app_secret) ? $portalData->app_secret : config('b24app.access.secret');
+        $app_id = !empty($portalData->app_id) ? $portalData->app_id : config('app24.access.id');
+        $app_secret = !empty($portalData->app_secret) ? $portalData->app_secret : config('app24.access.secret');
 
-        if (!$app_secret || !$app_secret)
+        if (!$app_id || !$app_secret)
             throw new FxException('Bad APP_ID or APP_SECRET!');
 
         $obB24App->setApplicationScope($scope);
@@ -101,7 +99,7 @@ class AuthController extends Controller
      * Битрикс24 может присылать данные авторизации в разных местах
      * Именно в этом файле мы смотрим где они хранятся и работаем с ними
      *
-     * @return array
+     * @return array|Request
      * @throws FxException
      */
     public static function getAuthArray(): array|Request
@@ -115,7 +113,7 @@ class AuthController extends Controller
         else if (session()->has('DOMAIN'))
             $data = ['DOMAIN' => session('DOMAIN')];
         else
-            throw new FxException(trans('flamix::msg.portal_empty_domain_in_get'));
+            throw new FxException(trans('flamix::error.portal_empty_domain_in_get'));
 
         return $data;
     }
@@ -131,9 +129,8 @@ class AuthController extends Controller
 
         $auth = [
             'app_code' => config('app.name'),
-            'scope' => config('b24app.access.scope'),
-            'app_id' => config('b24app.access.id'),
-            'app_secret' => config('b24app.access.secret'),
+            'app_id' => config('app24.access.id'),
+            'app_secret' => config('app24.access.secret'),
 
             'domain' => ($force_data && $data['domain']) ? $data['domain'] : self::getDomain(),
 
@@ -162,8 +159,9 @@ class AuthController extends Controller
     public static function setDomainToSession(): void
     {
         $domain = self::getDomain();
-        if ($domain)
+        if ($domain) {
             session(['DOMAIN' => $domain]);
+        }
     }
 
     /**
@@ -175,10 +173,7 @@ class AuthController extends Controller
     private static function prepareScope(string $scope): array
     {
         $scope = explode(',', $scope);
-        if (!is_array($scope))
-            return [$scope];
-
-        return $scope;
+        return is_array($scope) ? $scope : [$scope];
     }
 
     /**

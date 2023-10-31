@@ -10,7 +10,7 @@ class B24UserAdmin
 {
     public function handle($request, Closure $next)
     {
-        throw_unless(UserController::isAdmin(), FxException::class, trans('flamix::msg.only_admin'));
+        throw_unless(UserController::isAdmin(), FxException::class, trans('flamix::error.only_admin'));
 
         return $next($request);
     }

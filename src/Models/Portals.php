@@ -4,9 +4,9 @@ namespace Flamix\App24Core\Models;
 
 use App\Exceptions\FxException;
 use Flamix\App24Core\B24App;
-use Flamix\App24Core\Controllers\LicenseController;
 use Flamix\App24Core\Controllers\PortalController;
 use Flamix\App24Core\Controllers\App\CacheController;
+use Flamix\App24\Controllers\LicenseController;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -47,17 +47,17 @@ class Portals extends Model
             $app = $query->where('domain', $domain)->where(function ($query) use ($check_duplicate) {
                 $query->where('app_code', config('app.name'));
 
-                if ($check_duplicate) {
+                if ($check_duplicate && method_exists(LicenseController::class, 'getReverseEnv')) {
                     $query->orWhere('app_code', LicenseController::getReverseEnv());
                 }
             });
 
             if ($app->count() > 1) {
-                throw new FxException(trans('flamix::msg.security_finded_two_portal'), 402);
+                throw new FxException(trans('flamix::error.security_finded_two_portal'), 402);
             }
 
             return $app->firstOr(function () use ($domain) {
-                throw new FxException(trans('flamix::msg.security_cant_find_portal_code', ['domain' => $domain, 'code' => config('app.name')]));
+                throw new FxException(trans('flamix::error.security_cant_find_portal_code', ['domain' => $domain, 'code' => config('app.name')]));
             });
         });
     }
@@ -75,7 +75,7 @@ class Portals extends Model
             $data = $query->where('id', $id);
 
             return $data->firstOr(function () use ($id) {
-                throw new FxException(trans('flamix::msg.security_cant_find_portal_id', ['domain' => '(taked by ID)', 'id' => $id]));
+                throw new FxException(trans('flamix::error.security_cant_find_portal_id', ['domain' => '(taked by ID)', 'id' => $id]));
             });
         });
     }

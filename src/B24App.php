@@ -185,7 +185,7 @@ class B24App
      */
     public static function getAccessedLicenseType(): bool|array
     {
-        $type = config('b24app.access.access_type');
+        $type = config('app24.access.access_type');
         if ($type)
             return explode(',', $type);
 
@@ -199,7 +199,7 @@ class B24App
      */
     public static function getDeniedLicenseType(): bool|array
     {
-        $type = config('b24app.access.access_type');
+        $type = config('app24.access.access_type');
         if ($type)
             return explode(',', $type);
 

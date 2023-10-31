@@ -6,7 +6,6 @@ use Bitrix24\User\User;
 use Flamix\App24Core\Models\Portals;
 use Illuminate\Console\Command;
 use Flamix\App24Core\B24App;
-use Flamix\Marketing\Client as FlamixMarketing;
 
 /**
  * php artisan token:refresh --dev=1000
@@ -27,16 +26,6 @@ class refreshToken extends Command
      */
     protected $description = 'Refresh token to portal';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle()
     {
         $dev_portal_id = $this->option('dev');
@@ -44,10 +33,11 @@ class refreshToken extends Command
         $success = $error = 0;
         $portals = Portals::select(['id', 'user_id', 'app_code', 'domain', 'expires', 'updated_at']);
 
-        if ($dev_portal_id > 0)
+        if ($dev_portal_id > 0) {
             $portals->where('id', $dev_portal_id);
-        else
+        } else {
             $portals->where('expires', '<=', now()->subDays(2))->where('expires', '>=', now()->subDays(20));
+        }
 
         $portals = $portals->get();
         $this->log('--- START --- Portal count: ' . count($portals));
@@ -74,17 +64,10 @@ class refreshToken extends Command
         $this->table(['id', 'user_id', 'app_code', 'expires', 'updated_at'], $result['ERROR'],);
         $this->table(['id', 'user_id', 'app_code', 'expires', 'updated_at', 'Message'], $result['SUCCESS']);
         $this->log('--- END ---', ['success' => $success, 'error' => $error]);
-        // Send to mail
-        (new FlamixMarketing(config('b24app.email.token', 'token'), config('b24app.app.def_lang', 'en')))
-            ->email
-            ->setSubject('✅ Token refreshed!')
-            ->setBody("<h1>Hello,</h1><p><span style='color:green;'>{$success} successfully</span> and <span style='color:red;'>{$error} with error</span>. Check log on server to more info.</p>")
-            ->send(config('b24app.email.company', 'flamix.solutions'), config('b24app.email.admin', 'r.shkabko@flamix.email'), ['title' => '🖥️ ' . config('app.name', 'empty')]);
     }
 
     private function log(string $msg, array $data = [])
     {
-        chLog($msg, $data, 'token');
         dump($msg, $data);
     }
 }
