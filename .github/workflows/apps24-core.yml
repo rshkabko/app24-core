@@ -35,6 +35,12 @@ jobs:
           composer install --prefer-dist --no-interaction --no-scripts --no-progress --no-suggest --prefer-source --dev
           cd ..
 
+      - name: SQLLite file
+        run: |
+          cd laravel
+          touch database/database.sqlite
+          cd ..
+
       - name: Run tests
         run: |
           cd laravel
