@@ -1,0 +1,45 @@
+{
+    "name": "flamix/app24-core",
+    "description": "Easy way to create App24 Marketplace App",
+    "authors": [
+        {
+            "name": "Roman Shkabko",
+            "email": "r.shkabko@flamix.email",
+            "homepage": "https://flamix.info"
+        }
+    ],
+    "homepage": "https://github.com/rshkabko/app24-core",
+    "require": {
+        "flamix/rest24-php-sdk": "dev-master",
+        "flamix/settings": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0",
+        "mockery/mockery": "^1.1",
+        "orchestra/testbench": "~3|~4",
+        "sempro/phpunit-pretty-print": "^1.0"
+    },
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "Flamix\\App24Core\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Flamix\\App24Core\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Flamix\\App24Core\\App24ServiceProvider"
+            ],
+            "aliases": {
+                "App24Core": "Flamix\\App24Core\\Facades\\App24Core"
+            }
+        }
+    }
+}
