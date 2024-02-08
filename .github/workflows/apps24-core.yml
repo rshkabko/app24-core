@@ -27,6 +27,13 @@ jobs:
       - name: Install Laravel
         run: composer create-project --prefer-dist laravel/laravel:^10.0 laravel
 
+      - name: ENV
+        run: |
+          cd laravel
+          echo "APP_ID=flamix.test" >> .env
+          echo "APP_SECRET=secret" >> .env
+          cd ..
+
       - name: Install dependencies
         run: |
           cd laravel
