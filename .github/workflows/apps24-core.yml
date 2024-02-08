@@ -30,8 +30,8 @@ jobs:
       - name: ENV
         run: |
           cd laravel
-          echo "APP_ID=flamix.test" >> .env
-          echo "APP_SECRET=secret" >> .env
+          echo "B24_APP_ID=app_id" >> .env
+          echo "B24_APP_SECRET=secret" >> .env
           cd ..
 
       - name: Install dependencies
