@@ -10,26 +10,26 @@ use App\Exceptions\App24Exception;
 use Flamix\App24Core\Controllers\UserController;
 use Bitrix24\Bitrix24;
 
-class B24User
+class User24
 {
-    protected static B24User $instances;
-    protected static Bitrix24 $obB24User;
+    protected static User24 $instances;
+    protected static Bitrix24 $obUser24;
     protected static int $expire = 0;
 
     /**
      * Singleton.
      *
-     * @return B24User
+     * @return User24
      * @throws App24Exception
      */
-    public static function getInstance(): B24User
+    public static function getInstance(): User24
     {
         if (empty(self::$instances)) {
             self::$instances = new static;
         }
 
-        if (empty(self::$obB24User)) {
-            self::$obB24User = self::getAuth();
+        if (empty(self::$obUser24)) {
+            self::$obUser24 = self::getAuth();
         }
 
         return self::$instances;
@@ -43,7 +43,7 @@ class B24User
      */
     public static function getConnect(): Bitrix24
     {
-        return self::$obB24User;
+        return self::$obUser24;
     }
 
     /**
@@ -53,16 +53,16 @@ class B24User
     private static function getAuth(): Bitrix24
     {
         $session = isset(request()->DOMAIN) && isset(request()->member_id) ? self::setSessions() : self::getSessions();
-        throw_unless(isset($session), new App24Exception(trans('app24::error.b24user_open_portal_in_b24'), 444));
+        throw_unless(isset($session), new App24Exception(trans('app24::error.user24_open_portal_in_b24'), 444));
         // Secure issue
         if (isset(request()->DOMAIN) && !isset(request()->member_id) && request()->DOMAIN !== $session['domain']) {
             throw new App24Exception('Domain not same! Please, reload page in Bitrix24!', 447);
         }
 
-        $obB24User = self::getB24Auth($session);
+        $obUser24 = self::getB24Auth($session);
         if (self::isAuthExpire()) {
-            $obB24User->setRedirectUri('https://' . request()->DOMAIN . '/rest/');
-            $new_session = $obB24User->getNewAccessToken();
+            $obUser24->setRedirectUri('https://' . request()->DOMAIN . '/rest/');
+            $new_session = $obUser24->getNewAccessToken();
 
             //TODO: Костыль! Ставим наш домен из сессии. Дело в том, что getNewAccessToken() возвращает 'oauth.bitrix.info'
             // как домен, поэтому далее запросы идут туда, а так быть не может
@@ -74,7 +74,7 @@ class B24User
             return self::getB24Auth($new_session);
         }
 
-        return $obB24User;
+        return $obUser24;
     }
 
     /**
@@ -87,7 +87,7 @@ class B24User
      */
     private static function getB24Auth(array $session): Bitrix24
     {
-        $obB24App = new Bitrix24(false);
+        $obApp24 = new Bitrix24(false);
         $portal_scope = config('app24.access.scope');
 
         throw_unless($portal_scope, new App24Exception(trans('app24::error.security_cant_find_portal_code', ['domain' => $session['domain'], 'code' => config('app.name')])));
@@ -95,16 +95,16 @@ class B24User
         $scope = explode(',', $portal_scope);
         $scope = !is_array($scope) ? [$portal_scope] : $scope; // Always array
 
-        $obB24App->setApplicationScope($scope);
-        $obB24App->setApplicationId(config('app24.access.id'));
-        $obB24App->setApplicationSecret(config('app24.access.secret'));
+        $obApp24->setApplicationScope($scope);
+        $obApp24->setApplicationId(config('app24.access.id'));
+        $obApp24->setApplicationSecret(config('app24.access.secret'));
 
-        $obB24App->setDomain($session['domain']);
-        $obB24App->setMemberId($session['member_id']);
-        $obB24App->setAccessToken($session['access_token']);
-        $obB24App->setRefreshToken($session['refresh_token']);
+        $obApp24->setDomain($session['domain']);
+        $obApp24->setMemberId($session['member_id']);
+        $obApp24->setAccessToken($session['access_token']);
+        $obApp24->setRefreshToken($session['refresh_token']);
 
-        return $obB24App;
+        return $obApp24;
     }
 
     /**
@@ -118,7 +118,7 @@ class B24User
     {
         $request = request()->all();
         if (empty($session) && (!isset($request['DOMAIN']) || !isset($request['member_id'])))
-            throw new App24Exception(trans('app24::error.b24user_open_portal_in_b24'), 444);
+            throw new App24Exception(trans('app24::error.user24_open_portal_in_b24'), 444);
 
         if (empty($session)) {
             $session = [
@@ -145,7 +145,7 @@ class B24User
     {
         $session = request()->session()->all();
         if (!isset($session['domain']) || !isset($session['member_id']) || !isset($session['access_token']) || !isset($session['refresh_token']))
-            throw new App24Exception(trans('app24::error.b24user_cant_take_session'));
+            throw new App24Exception(trans('app24::error.user24_cant_take_session'));
 
         return $session;
     }
@@ -168,7 +168,7 @@ class B24User
      */
     public static function isAdmin(): bool
     {
-        dd('B24User::isAdmin() - DEPRECATED!');
+        dd('User24::isAdmin() - DEPRECATED!');
         return UserController::isAdmin();
     }
 
@@ -180,7 +180,7 @@ class B24User
      */
     public static function getID(): int
     {
-        dd('B24User::getID() - DEPRECATED!');
+        dd('User24::getID() - DEPRECATED!');
         return UserController::getID();
     }
 }

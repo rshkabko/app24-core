@@ -6,7 +6,7 @@ use Closure;
 use Flamix\App24Core\Controllers\UserController;
 use App\Exceptions\App24Exception;
 
-class B24UserAdmin
+class User24Admin
 {
     public function handle($request, Closure $next)
     {

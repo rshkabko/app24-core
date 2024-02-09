@@ -3,9 +3,9 @@
 namespace Flamix\App24Core\Middleware;
 
 use Closure;
-use Flamix\App24Core\B24App as B24AppController;
+use Flamix\App24Core\App24 as App24Controller;
 
-class B24App
+class App24
 {
     public function handle($request, Closure $next)
     {
@@ -14,7 +14,7 @@ class B24App
             session(['DOMAIN' => $domain]);
         }
 
-        B24AppController::getInstance();
+        App24Controller::getInstance();
         return $next($request);
     }
 }

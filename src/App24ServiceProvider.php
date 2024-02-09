@@ -11,23 +11,23 @@ class App24ServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
         // Middleware: App24
-        $router->aliasMiddleware('B24App', Middleware\B24App::class);
-        $router->aliasMiddleware('B24Settings', Middleware\B24Settings::class);
+        $router->aliasMiddleware('App24', Middleware\App24::class);
+        $router->aliasMiddleware('App24Settings', Middleware\App24Settings::class);
 
         // Middleware: User24
-        $router->aliasMiddleware('B24User', Middleware\B24User::class);
-        $router->aliasMiddleware('B24UserAdmin', Middleware\B24UserAdmin::class);
+        $router->aliasMiddleware('User24', Middleware\User24::class);
+        $router->aliasMiddleware('User24Admin', Middleware\User24Admin::class);
 
         // Register grouped Middleware "app24"
         $this->app->booted(function () use ($router) {
-            $router->pushMiddlewareToGroup('app24', Middleware\B24App::class);
-            $router->pushMiddlewareToGroup('app24', Middleware\B24Settings::class);
+            $router->pushMiddlewareToGroup('app24', Middleware\App24::class);
+            $router->pushMiddlewareToGroup('app24', Middleware\App24Settings::class);
         });
 
         // Register grouped Middleware "user24". Some times we need use app without user
         $this->app->booted(function () use ($router) {
             $router->pushMiddlewareToGroup('user24', 'app24'); // Need app24 middleware by default
-            $router->pushMiddlewareToGroup('user24', Middleware\B24User::class);
+            $router->pushMiddlewareToGroup('user24', Middleware\User24::class);
         });
 
         // Translations

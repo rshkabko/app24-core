@@ -6,7 +6,7 @@ use Closure;
 use Flamix\App24Core\Controllers\SettingController;
 use Flamix\App24Core\Controllers\PortalController;
 
-class B24Settings
+class App24Settings
 {
     public function handle($request, Closure $next)
     {

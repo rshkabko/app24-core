@@ -13,15 +13,15 @@ if (!function_exists('lang')) {
 }
 
 if (!function_exists('app24')) {
-    function app24(int $id = 0): \Flamix\App24Core\B24App
+    function app24(int $id = 0): \Flamix\App24Core\App24
     {
-        return \Flamix\App24Core\B24App::getInstance($id);
+        return \Flamix\App24Core\App24::getInstance($id);
     }
 }
 
 if (!function_exists('user24')) {
-    function user24(): \Flamix\App24Core\B24User
+    function user24(): \Flamix\App24Core\User24
     {
-        return \Flamix\App24Core\B24User::getInstance();
+        return \Flamix\App24Core\User24::getInstance();
     }
 }

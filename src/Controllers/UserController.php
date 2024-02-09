@@ -6,8 +6,8 @@ use App\Exceptions\App24Exception;
 use Bitrix24\Bitrix24;
 use Bitrix24\User\User;
 use Flamix\App24Core\Models\Portals;
-use Flamix\App24Core\B24User;
-use Flamix\App24Core\B24App;
+use Flamix\App24Core\User24;
+use Flamix\App24Core\App24;
 
 class UserController
 {
@@ -18,7 +18,7 @@ class UserController
      */
     private static function getAuth(): Bitrix24
     {
-        return B24User::getInstance()->getConnect();
+        return User24::getInstance()->getConnect();
     }
 
     /**
@@ -65,10 +65,10 @@ class UserController
         }
 
         // Access the admin specifically since getAuth() of this class provides us the access of CURRENT user
-        $obB24User = new User(B24App::getInstance($portal_id)->getConnect());
-        $arCurrentB24User = $obB24User->current();
+        $obUser24 = new User(App24::getInstance($portal_id)->getConnect());
+        $arCurrentUser24 = $obUser24->current();
 
-        return intval($arCurrentB24User['result']['ID'] ?? 0);
+        return intval($arCurrentUser24['result']['ID'] ?? 0);
     }
 
     /**

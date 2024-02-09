@@ -3,7 +3,7 @@
 namespace Flamix\App24Core\Models;
 
 use App\Exceptions\App24Exception;
-use Flamix\App24Core\B24App;
+use Flamix\App24Core\App24;
 use Flamix\App24Core\Controllers\PortalController;
 use Flamix\App24Core\Controllers\CacheController;
 use Illuminate\Support\Facades\Cache;

@@ -10,7 +10,7 @@ class Language
      * Устанавливаем язык из БД
      *
      * По умолчанию язык берем по домену. Если домена нет (CRON), то нужно автоматически ставить так
-     * \Flamix\B24App\Language::set(2);
+     * \Flamix\App24\Language::set(2);
      *
      * @param int $portal_id
      * @return string

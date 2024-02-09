@@ -5,7 +5,7 @@ namespace Flamix\App24Core\Controllers;
 use Exception;
 use Bitrix24\Event\Event;
 use Flamix\App24Core\Language;
-use Flamix\App24Core\B24App;
+use Flamix\App24Core\App24;
 use App\Exceptions\App24Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -92,7 +92,7 @@ class InstallController extends Controller
     private function uninstallEvent(int $portal_id): bool
     {
         try {
-            $events = new Event(B24App::getInstance($portal_id)->getConnect());
+            $events = new Event(App24::getInstance($portal_id)->getConnect());
             $result = $events->bind('ONAPPUNINSTALL', route('app24.uninstall', ['hash' => $this->getHash($portal_id)]));
         } catch (Exception $exception) {
             info('Error unregister event', [$exception->getMessage()]);

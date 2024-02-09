@@ -5,7 +5,7 @@ namespace Flamix\App24Core\Console\Commands;
 use Bitrix24\User\User;
 use Flamix\App24Core\Models\Portals;
 use Illuminate\Console\Command;
-use Flamix\App24Core\B24App;
+use Flamix\App24Core\App24;
 
 /**
  * php artisan token:refresh --dev=1000
@@ -46,8 +46,8 @@ class refreshToken extends Command
             if ($portal->id) {
                 $this->log('Refresh token on portal #' . $portal->id . ' (' . $portal->domain . ')!');
                 try {
-                    $obB24User = new User(B24App::getInstance($portal->id)->getConnect());
-                    $obB24User->getById($portal->user_id);
+                    $obUser24 = new User(App24::getInstance($portal->id)->getConnect());
+                    $obUser24->getById($portal->user_id);
 
                     $this->log('Success: last_expires "' . $portal->expires . '" and last_updated_at: "' . $portal->expires);
                     $result['SUCCESS'][] = $portal->toArray();

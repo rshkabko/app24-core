@@ -5,7 +5,7 @@ namespace Flamix\App24Core\Controllers;
 use App\Exceptions\App24Exception;
 use Exception;
 use Bitrix24\Bitrix24;
-use Flamix\App24Core\B24App;
+use Flamix\App24Core\App24;
 use Flamix\App24Core\Controllers\CacheController;
 use Flamix\App24Core\Models\Portals;
 use Illuminate\Http\Request;
@@ -30,7 +30,7 @@ class AuthController extends Controller
         // Так надо для уже существующих доменов
         // Потому что создает всегда без _pay при запросе на домен
         try {
-            $portal_id = B24App::getID() ?: Portals::getId($insert['domain']);
+            $portal_id = App24::getID() ?: Portals::getId($insert['domain']);
         } catch (Exception $e) {
             $portal_id = 0;
         }
@@ -45,7 +45,7 @@ class AuthController extends Controller
                 'access_token' => $insert['access_token'],
                 'refresh_token' => $insert['refresh_token'],
                 'scope' => $insert['scope'],
-                'expires' => $insert['expires'],
+                'expires' => $insert['expires'] ?? now()->addSeconds(3500),
             ];
         } else {
             // New portal
@@ -74,23 +74,23 @@ class AuthController extends Controller
      */
     public static function getPortalAuthWithoutCheck(object $portalData): Bitrix24
     {
-        $obB24App = new Bitrix24(false);
+        $obApp24 = new Bitrix24(false);
         $scope = self::prepareScope($portalData->scope);
         $app_id = !empty($portalData->app_id) ? $portalData->app_id : config('app24.access.id');
         $app_secret = !empty($portalData->app_secret) ? $portalData->app_secret : config('app24.access.secret');
 
         throw_if(!$app_id || !$app_secret, App24Exception::class, 'Empty APP_ID or APP_SECRET!');
 
-        $obB24App->setApplicationScope($scope);
-        $obB24App->setApplicationId($app_id);
-        $obB24App->setApplicationSecret($app_secret);
+        $obApp24->setApplicationScope($scope);
+        $obApp24->setApplicationId($app_id);
+        $obApp24->setApplicationSecret($app_secret);
 
-        $obB24App->setDomain($portalData->domain);
-        $obB24App->setMemberId($portalData->member_id);
-        $obB24App->setAccessToken($portalData->access_token);
-        $obB24App->setRefreshToken($portalData->refresh_token);
+        $obApp24->setDomain($portalData->domain);
+        $obApp24->setMemberId($portalData->member_id);
+        $obApp24->setAccessToken($portalData->access_token);
+        $obApp24->setRefreshToken($portalData->refresh_token);
 
-        return $obB24App;
+        return $obApp24;
     }
 
     /**

@@ -11,10 +11,10 @@ use Bitrix24\App\App as Bitrix24App;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
-class B24App
+class App24
 {
-    protected static ?B24App $instances;
-    protected static ?Bitrix24 $obB24App;
+    protected static ?App24 $instances;
+    protected static ?Bitrix24 $obApp24;
     protected static ?Portals $portalData;
     protected static int $portalId = 0;
 
@@ -22,10 +22,10 @@ class B24App
      * Singelton.
      *
      * @param int $id
-     * @return B24App
+     * @return App24
      * @throws App24Exception
      */
-    public static function getInstance(int $id = 0): B24App
+    public static function getInstance(int $id = 0): App24
     {
         // При руной инициализации не нужно записывать домен в сессию
         if (!$id) {
@@ -49,8 +49,8 @@ class B24App
             self::$portalData = PortalController::get(self::$portalId);
         }
 
-        if (empty(self::$obB24App)) {
-            self::$obB24App = self::connectPortal();
+        if (empty(self::$obApp24)) {
+            self::$obApp24 = self::connectPortal();
         }
 
         // Переопределяем ID с БД
@@ -69,7 +69,7 @@ class B24App
     public static function reInstance(): void
     {
         self::$instances = null;
-        self::$obB24App = null;
+        self::$obApp24 = null;
         self::$portalData = null;
         self::$portalId = 0;
     }
@@ -78,9 +78,9 @@ class B24App
      * Устанавливаем ID портала (по умолчанию пытаемся вычеслить самостоятельно)
      *
      * @param int $id
-     * @return B24App
+     * @return App24
      */
-    public static function setID(int $id): B24App
+    public static function setID(int $id): App24
     {
         self::$portalId = $id;
         return self::$instances;
@@ -107,9 +107,9 @@ class B24App
     {
         // Проверка, а был ли вызван getInstance() перед getConnect()
         // Если не вызван, тогда у нас будут проблемы с обновлением токена, потому что он обновляется в getInstance()
-        // Обычно он вызывается в Middelware или через B24App::getInstance(), но если забыть будет ГГ
-        throw_unless(self::getID(), App24Exception::class, 'getConnect(): You mast call B24App::getInstance() or add B24App Middelware!');
-        return self::$obB24App;
+        // Обычно он вызывается в Middelware или через App24::getInstance(), но если забыть будет ГГ
+        throw_unless(self::getID(), App24Exception::class, 'getConnect(): You mast call App24::getInstance() or add App24 Middelware!');
+        return self::$obApp24;
     }
 
     /**
@@ -133,28 +133,28 @@ class B24App
      */
     private static function connectPortal(): Bitrix24
     {
-        $obB24App = AuthController::getPortalAuthWithoutCheck(self::$portalData);
+        $obApp24 = AuthController::getPortalAuthWithoutCheck(self::$portalData);
 
         // Если токен просрочился (проверяем через нашу БД, т.к. это БЫСТРЕЕ)
         // То мы сперва получаем новые доступы, апдейтим все в БД и дальше заново инициализируем класс для подключения
         // Если осталось 5 минут (300 сек) - мы все равно обновляем
         if (Carbon::parse(self::getPortalData()->expires)?->subSeconds(300) <= Carbon::now()) {
-            $obB24App = self::forceUpdateAndConnectPortal($obB24App);
+            $obApp24 = self::forceUpdateAndConnectPortal($obApp24);
         }
 
-        return $obB24App;
+        return $obApp24;
     }
 
     /**
      * Принудительное обновления токена
      *
-     * @param Bitrix24 $obB24App
+     * @param Bitrix24 $obApp24
      * @return Bitrix24
      */
-    public static function forceUpdateAndConnectPortal(Bitrix24 $obB24App): Bitrix24
+    public static function forceUpdateAndConnectPortal(Bitrix24 $obApp24): Bitrix24
     {
-        $obB24App->setRedirectUri("https://" . self::getPortalData()->domain . "/rest/");
-        $access = $obB24App->getNewAccessToken();
+        $obApp24->setRedirectUri("https://" . self::getPortalData()->domain . "/rest/");
+        $access = $obApp24->getNewAccessToken();
 
         $access['scope'] = self::getPortalData()->scope;
         $access['domain'] = self::getPortalData()->domain;
