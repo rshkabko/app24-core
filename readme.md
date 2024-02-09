@@ -13,8 +13,9 @@ Add the following to your .env file:
 
 ```dotenv
 APP_NAME=company.app24-name
-B24_APP_ID=app.secret.code
-B24_APP_SECRET=super_secret_code
+APP24_ID=app.secret.code
+APP24_SECRET=super_secret_code
+APP24_SCOPE=crm,user,task
 ```
 
 ## Usage
