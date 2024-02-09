@@ -4,7 +4,7 @@ namespace Flamix\App24Core;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
-use Flamix\App24Core\Console\Commands as FlamixCommands;
+use Flamix\App24Core\Console\Commands as App24Commands;
 
 class App24ServiceProvider extends ServiceProvider
 {
@@ -88,7 +88,8 @@ class App24ServiceProvider extends ServiceProvider
 
         // Registering package commands.
         $this->commands([
-            FlamixCommands\refreshToken::class,
+            App24Commands\refreshToken::class,
+            App24Commands\Install::class,
         ]);
     }
 }

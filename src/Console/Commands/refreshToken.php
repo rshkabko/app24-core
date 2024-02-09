@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 use Flamix\App24Core\App24;
 
 /**
- * php artisan token:refresh --dev=1000
+ * php artisan app24:refresh-token --dev=1000
  */
 class refreshToken extends Command
 {
@@ -17,7 +17,7 @@ class refreshToken extends Command
      *
      * @var string
      */
-    protected $signature = 'token:refresh {--dev=0}';
+    protected $signature = 'app24:refresh-token {--dev=0}';
 
     /**
      * The console command description.
@@ -44,12 +44,12 @@ class refreshToken extends Command
 
         foreach ($portals as $portal) {
             if ($portal->id) {
-                $this->log('Refresh token on portal #' . $portal->id . ' (' . $portal->domain . ')!');
+                $this->log("Refresh token on portal #{$portal->id} ({$portal->domain})!");
                 try {
                     $obUser24 = new User(App24::getInstance($portal->id)->getConnect());
                     $obUser24->getById($portal->user_id);
 
-                    $this->log('Success: last_expires "' . $portal->expires . '" and last_updated_at: "' . $portal->expires);
+                    $this->log("Success: last_expires - {$portal->expires} and last_updated_at: {$portal->expires}");
                     $result['SUCCESS'][] = $portal->toArray();
                     ++$success;
                 } catch (\Exception $e) {
