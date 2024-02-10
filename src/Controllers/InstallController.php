@@ -43,6 +43,9 @@ class InstallController extends Controller
         $id = app(AuthController::class)->insertOrUpdateOAuth((array)$portal);
         throw_unless($id, App24Exception::class, trans('app24::error.portal_cant_install'));
 
+        // Language to DB
+        Language::setPortalLanguage($id, $lang);
+
         // Add event to uninstall
         $this->uninstallEvent($id);
 
