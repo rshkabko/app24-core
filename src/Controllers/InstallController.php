@@ -80,8 +80,7 @@ class InstallController extends Controller
         }
 
         event('onBeforePortalDestroy', [$portal_id]);
-        // TODO: Add listener to my SDK
-        //PortalController::destroy($portal_id, $need_clear_data)
+
         return ['status' => app(config('app24.app.views'))->uninstall($portal_id, $need_clear_data)];
     }
 

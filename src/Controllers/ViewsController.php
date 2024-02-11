@@ -38,6 +38,7 @@ class ViewsController extends Controller
 
         Portals::where('id', $portal_id)->delete();
         CacheController::clearPortalCache($portal_id);
+        SettingController::deletePortalSettings($portal_id);
 
         return true;
     }
