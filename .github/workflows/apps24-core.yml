@@ -30,8 +30,9 @@ jobs:
       - name: ENV
         run: |
           cd laravel
-          echo "B24_APP_ID=app_id" >> .env
-          echo "B24_APP_SECRET=secret" >> .env
+          echo "APP24_ID=app_id" >> .env
+          echo "APP24_SECRET=secret" >> .env
+          echo "APP24_SCOPE=crm,user" >> .env
           cd ..
 
       - name: Install dependencies
