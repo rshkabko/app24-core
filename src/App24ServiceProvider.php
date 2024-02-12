@@ -20,6 +20,7 @@ class App24ServiceProvider extends ServiceProvider
 
         // Register grouped Middleware "app24"
         $this->app->booted(function () use ($router) {
+            $router->pushMiddlewareToGroup('app24', 'web'); // Session, Cookie, CFRF is required
             $router->pushMiddlewareToGroup('app24', Middleware\App24::class);
             $router->pushMiddlewareToGroup('app24', Middleware\App24Settings::class);
         });
