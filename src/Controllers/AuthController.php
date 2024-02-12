@@ -118,10 +118,14 @@ class AuthController extends Controller
     }
 
     /**
-     * Собираем данные для авторизации
-     * Проблема в том, что они прилетают все время разные, а тут мы их проверяем и нарезаем
+     * Authorization data in a single format.
+     * Different data (ex. when install or refresh) can be passed to the method, but the result will be the same.
+     *
+     * @param array|null $force_data
+     * @return array
+     * @throws App24Exception
      */
-    public static function getAuthFields($force_data = false): array
+    public static function getAuthFields(?array $force_data = null): array
     {
         // Если мы не передали $force_data, то мы то же самое берем с request()
         $data = ($force_data) ?: self::getAuthArray();
@@ -131,10 +135,10 @@ class AuthController extends Controller
             'app_code' => config('app.name'),
             'app_id' => config('app24.access.id'),
             'app_secret' => config('app24.access.secret'),
+            'scope' => config('app24.access.scope'),
 
             'domain' => ($force_data && $domain) ? $domain : PortalController::getDomain(),
 
-            'scope' => $data['scope'] ?? false,
             'member_id' => $data['member_id'] ?? false,
             'access_token' => $data['access_token'] ?? $data['AUTH_ID'] ?? false,
             'refresh_token' => $data['refresh_token'] ?? $data['REFRESH_ID'] ?? false,
@@ -142,10 +146,18 @@ class AuthController extends Controller
         ];
 
         // Expires
-        if (!empty($data['expires'] ?? '')) {
-            $auth['expires'] = Carbon::createFromTimestamp($data['expires']);
-        } else if (!empty($data['AUTH_ID'] ?? '')) {
-            $auth['expires'] = Carbon::now()->addSeconds(3500);
+        $expires = $data['expires'] ?? null;
+        if (!empty($expires)) {
+            if ($expires instanceof Carbon) {
+                $auth['expires'] = $expires;
+            } else if (is_integer(intval($expires))) {
+                $auth['expires'] = Carbon::createFromTimestamp($expires);
+            } else {
+                throw new App24Exception("Expires is not Carbon or timestamp! Value: {$expires}");
+            }
+        } else {
+            $expires_time = intval($data['AUTH_EXPIRES'] ?? 3600) - 100;
+            $auth['expires'] = now()->addSeconds($expires_time);
         }
 
         return $auth;
