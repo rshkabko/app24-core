@@ -4,7 +4,7 @@ return [
     'app' => [
         'name' => env('APP_NAME'),
         'def_lang' => env('APP_DEFAULT_LANG', 'en'),
-        'views' => \Flamix\App24Core\Controllers\ViewsController::class,
+        'views' => env('APP_VIEWS', \Flamix\App24Core\Controllers\ViewsController::class),
     ],
     'access' => [
         'id' => env('APP24_ID', false),
