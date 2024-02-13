@@ -6,7 +6,7 @@ use Flamix\App24Core\Controllers;
 /**
  * WEB
  */
-Route::group(['prefix' => 'app24', 'middleware' => ['web']], function () {
+Route::group(['prefix' => 'app24', 'middleware' => ['app24']], function () {
     Route::any('install', [Controllers\InstallController::class, 'install'])->name('app24.install');
 });
 
