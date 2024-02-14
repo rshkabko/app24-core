@@ -13,6 +13,7 @@ class App24ServiceProvider extends ServiceProvider
         // Middleware: App24
         $router->aliasMiddleware('App24', Middleware\App24::class);
         $router->aliasMiddleware('App24Settings', Middleware\App24Settings::class);
+        $router->aliasMiddleware('SaveDomain', Middleware\SaveDomain::class);
 
         // Middleware: User24
         $router->aliasMiddleware('User24', Middleware\User24::class);
@@ -21,6 +22,7 @@ class App24ServiceProvider extends ServiceProvider
         // Register grouped Middleware "app24"
         $this->app->booted(function () use ($router) {
             $router->pushMiddlewareToGroup('app24', 'web'); // Session, Cookie, CFRF is required
+            $router->pushMiddlewareToGroup('app24', Middleware\SaveDomain::class);
             $router->pushMiddlewareToGroup('app24', Middleware\App24::class);
             $router->pushMiddlewareToGroup('app24', Middleware\App24Settings::class);
         });

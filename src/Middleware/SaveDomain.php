@@ -3,13 +3,13 @@
 namespace Flamix\App24Core\Middleware;
 
 use Closure;
-use Flamix\App24Core\App24 as App24Controller;
+use Flamix\App24Core\Controllers\AuthController;
 
-class App24
+class SaveDomain
 {
     public function handle($request, Closure $next)
     {
-        App24Controller::getInstance();
+        AuthController::setDomainToSession();
         return $next($request);
     }
 }
