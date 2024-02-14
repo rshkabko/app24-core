@@ -50,7 +50,7 @@ class InstallDeleteTest extends TestCase
     private function getAuth()
     {
         return [
-            'DOMAIN' => 'pr.flamix.info',
+            'domain' => 'pr.flamix.info',
             'member_id' => 'member_id',
             'access_token' => 'access_token',
             'refresh_token' => 'refresh_token',
