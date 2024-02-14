@@ -7,5 +7,5 @@ Route::group(['prefix' => 'app24'], function () {
     // Install
     Route::any('install', [InstallController::class, 'install'])->middleware(['web', 'SaveDomain'])->name('app24.install');
     // Delete
-    Route::post('uninstall/{hash}', [InstallController::class, 'destroy'])->middleware(['api', 'app24'])->name('app24.uninstall');
+    Route::post('uninstall/{hash}', [InstallController::class, 'destroy'])->middleware(['api', 'App24'])->name('app24.uninstall');
 });

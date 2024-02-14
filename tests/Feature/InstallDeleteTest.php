@@ -85,12 +85,10 @@ class InstallDeleteTest extends TestCase
             'auth' => $this->getAuth(),
             'data' => ['CLEAN' => true]
         ]);
-        $response->assertStatus(200)->assertJson([
-            'status' => true
-        ]);
+        $response->assertStatus(200)->assertJsonFragment(['status' => true]);
     }
 
-    public function test_is_app_was_deleted_frim_db()
+    public function test_is_app_was_deleted_from_db()
     {
         $this->assertTrue(Portals::count() === 0);
     }
