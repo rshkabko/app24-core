@@ -18,12 +18,13 @@ class App24Exception extends Exception
      * TODO! If we have ExceptionController - show it.
      *
      * @param Request $request
-     * @return View
+     * @return View|array
      * @throws Exception
      */
-    public function render(Request $request): View
+    public function render(Request $request): View|array
     {
         // TODO: Check if ExceptionController exist - show
+        return ['error' => $this->getMessage()];
         throw new Exception($this->getMessage(), $this->getCode());
     }
 }
