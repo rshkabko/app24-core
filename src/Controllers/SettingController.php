@@ -33,11 +33,8 @@ class SettingController extends Controller
      */
     public static function save(string|array $key, mixed $value = false): void
     {
-        if (is_array($key)) {
-            setting($key)->save();
-        } else {
-            setting([$key => $value])->save();
-        }
+        $key = is_array($key) ? $key : [$key => $value];
+        setting($key)->save();
     }
 
     /**
@@ -72,25 +69,24 @@ class SettingController extends Controller
         event('onBeforeSaveSettings', [&$settings]);
 
         foreach ($settings as $key => $value) {
-            if ($key == 'DOMAIN' || $key == 'api_token')
-                continue;
+            if ($key == 'DOMAIN' || $key == 'api_token') continue;
 
             $key = self::prepereKeyToSave($key);
-            if (is_array($value))
+            if (is_array($value)) {
                 self::doSavedString($value, $key);
-            else
+            } else {
                 Setting::set($key, filter_var($value, FILTER_SANITIZE_STRING));
+            }
         }
 
-        LogController::portal(trans('app24::error.log_setting_saving'), $settings);
-        // Final action - https://github.com/anlutro/laravel-settings/blob/master/src/SaveMiddleware.php
+        // Logging...
+        if (function_exists('portalLog')) {
+            portalLog(trans('app24::error.log_setting_saving'), $settings);
+        }
+
         setting()->save();
 
-        return [
-            'data' => $request->all(),
-            'status' => 'success',
-            'msg' => trans('app24::error.setting_saved'),
-        ];
+        return ['data' => $request->all(), 'status' => 'success', 'msg' => trans('app24::error.setting_saved')];
     }
 
     /**
@@ -115,10 +111,11 @@ class SettingController extends Controller
     {
         foreach ($array as $key => $value) {
             $key = self::prepereKeyToSave($key);
-            if (!is_array($value))
+            if (!is_array($value)) {
                 Setting::set($prev_key . '.' . $key, filter_var($value, FILTER_SANITIZE_STRING));
-            else
+            } else {
                 self::doSavedString($value, $prev_key . '.' . $key);
+            }
         }
     }
 
@@ -156,11 +153,9 @@ class SettingController extends Controller
 
         $setting_value = setting($name, $default);
 
-        if ($setting_value == 'true')
-            return true;
-
-        if ($setting_value == 'false')
-            return false;
+        // Hot fix!
+        if ($setting_value == 'true') return true;
+        if ($setting_value == 'false') return false;
 
         return $setting_value;
     }
@@ -218,8 +213,9 @@ class SettingController extends Controller
             ->limit(1)
             ->value('portal_id');
 
-        if ($portal_id > 0)
+        if ($portal_id > 0) {
             return $portal_id;
+        }
 
         throw new App24Exception('Cant find Portal by setting key: ' . $key);
     }
