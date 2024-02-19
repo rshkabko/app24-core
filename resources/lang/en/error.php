@@ -15,4 +15,8 @@ return [
     // User
     'user24_open_portal_in_b24' => '[USER] Open the APP on the Bitrix24 Portal or reload page!',
     'user24_cant_take_session' => '[USER] Transfer of sessions on the portal does not work! Frequent mistakes: you are using the Safari browser (Chrome is recommended) or the browser is running in anonymous mode!',
+
+    // Settings
+    'setting_saved' => 'Setting saved!',
+    'log_setting_saving' => 'Saving settings',
 ];
