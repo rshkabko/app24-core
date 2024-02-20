@@ -19,16 +19,18 @@ class App24ServiceProvider extends ServiceProvider
         $router->aliasMiddleware('User24', Middleware\User24::class);
         $router->aliasMiddleware('User24Admin', Middleware\User24Admin::class);
 
-        // Register grouped Middleware "app24"
         $this->app->booted(function () use ($router) {
+            // Register grouped Middleware "app24"
             $router->pushMiddlewareToGroup('app24', 'web'); // Session, Cookie, CFRF is required
             $router->pushMiddlewareToGroup('app24', Middleware\SaveDomain::class);
             $router->pushMiddlewareToGroup('app24', Middleware\App24::class);
             $router->pushMiddlewareToGroup('app24', Middleware\App24Settings::class);
-        });
 
-        // Register grouped Middleware "user24". Some times we need use app without user
-        $this->app->booted(function () use ($router) {
+            // Register grouped Middleware "app24-api" - lighten version of app24
+            $router->pushMiddlewareToGroup('app24-api', Middleware\App24::class);
+            $router->pushMiddlewareToGroup('app24-api', Middleware\App24Settings::class);
+
+            // Register grouped Middleware "user24". Some times we need use app without user
             $router->pushMiddlewareToGroup('user24', 'app24'); // Need app24 middleware by default
             $router->pushMiddlewareToGroup('user24', Middleware\User24::class);
         });
