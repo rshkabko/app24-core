@@ -6,6 +6,7 @@ use App\Exceptions\App24Exception;
 use Flamix\App24Core\App24;
 use Flamix\App24Core\Controllers\PortalController;
 use Flamix\App24Core\Controllers\CacheController;
+use Flamix\B24App\Controllers\PortalController as B24PortalController;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -46,8 +47,8 @@ class Portals extends Model
             $app = $query->where('domain', $domain)->where(function ($query) use ($check_duplicate) {
                 $query->where('app_code', config('app.name'));
 
-                if ($check_duplicate && method_exists(PortalController::class, 'getReverseEnv')) {
-                    $query->orWhere('app_code', PortalController::getReverseEnv());
+                if ($check_duplicate && method_exists(B24PortalController::class, 'getReverseEnv')) {
+                    $query->orWhere('app_code', B24PortalController::getReverseEnv());
                 }
             });
 
