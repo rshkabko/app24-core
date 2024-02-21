@@ -168,7 +168,7 @@ class User24
      */
     public static function isAdmin(): bool
     {
-        dd('User24::isAdmin() - DEPRECATED!');
+        throw new \Exception('User24::isAdmin() - DEPRECATED! Please, contact to administrator if you see this error!');
         return UserController::isAdmin();
     }
 
@@ -180,7 +180,7 @@ class User24
      */
     public static function getID(): int
     {
-        dd('User24::getID() - DEPRECATED!');
+        throw new \Exception('User24::getID() - DEPRECATED! Please, contact to administrator if you see this error!');
         return UserController::getID();
     }
 }
