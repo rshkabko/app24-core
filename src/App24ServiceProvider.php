@@ -26,7 +26,8 @@ class App24ServiceProvider extends ServiceProvider
             $router->pushMiddlewareToGroup('app24', Middleware\App24::class);
             $router->pushMiddlewareToGroup('app24', Middleware\App24Settings::class);
 
-            // Register grouped Middleware "app24-api" - lighten version of app24
+            // Lighten version of app24, some times we can extend it
+            $router->pushMiddlewareToGroup('app24-api', 'web');  // Session, Cookie, CFRF is required
             $router->pushMiddlewareToGroup('app24-api', Middleware\App24::class);
             $router->pushMiddlewareToGroup('app24-api', Middleware\App24Settings::class);
 
