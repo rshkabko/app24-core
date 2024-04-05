@@ -52,5 +52,5 @@ jobs:
       - name: Run tests
         run: |
           cd laravel
-          php artisan test ./vendor/flamix/app24-core/tests --configuration ./vendor/flamix/app24-core/phpunit.xml
+          ./vendor/bin/phpunit --configuration ./vendor/flamix/app24-core/phpunit.xml ./vendor/flamix/app24-core/tests
           cd ..
