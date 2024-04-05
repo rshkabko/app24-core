@@ -161,9 +161,11 @@ class App24
 
         // Update auth data
         app(AuthController::class)->insertOrUpdateOAuth($access);
-        // Set new auth data
+        // Set new auth data in Portal
         self::$portalData = Portals::getData(self::$portalId);
-        return AuthController::getPortalAuthWithoutCheck(self::getPortalData());
+        // Set new auth data to singelton
+        self::$obApp24 = AuthController::getPortalAuthWithoutCheck(self::getPortalData());
+        return self::$obApp24;
     }
 
     /**
