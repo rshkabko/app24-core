@@ -26,15 +26,19 @@ if (!function_exists('user24')) {
     }
 }
 
-// TODO: Maybe refactor this function to better Livewire support
-if (!function_exists('route')) {
-    function route($name, $parameters = [], $absolute = true)
+if (! function_exists('app24_url')) {
+    function app24_url($path = null, $parameters = [], $secure = null)
     {
-        if (str_contains($name, 'livewire')) {
-            return app24_route($name, $parameters, $absolute);
+        $session_id = session()?->getId();
+        $session_cookie_key = config('session.cookie');
+        $url = url($path, $parameters, $secure);
+
+        if ($session_cookie_key && $session_id && !isset($parameters[$session_cookie_key])) {
+            $url .= str_contains($url, '?') ? '&' : '?';
+            $url .= "{$session_cookie_key}={$session_id}";
         }
 
-        return app('url')->route($name, $parameters, $absolute);
+        return $url;
     }
 }
 
@@ -45,6 +49,18 @@ if (!function_exists('app24_route')) {
         $session_cookie_key = config('session.cookie');
         if ($session_cookie_key && $session_id && !isset($parameters[$session_cookie_key])) {
             $parameters[$session_cookie_key] = $session_id;
+        }
+
+        return app('url')->route($name, $parameters, $absolute);
+    }
+}
+
+// TODO: Maybe refactor this function to better Livewire support
+if (!function_exists('route')) {
+    function route($name, $parameters = [], $absolute = true)
+    {
+        if (str_contains($name, 'livewire')) {
+            return app24_route($name, $parameters, $absolute);
         }
 
         return app('url')->route($name, $parameters, $absolute);
