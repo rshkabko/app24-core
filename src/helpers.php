@@ -54,15 +54,3 @@ if (!function_exists('app24_route')) {
         return app('url')->route($name, $parameters, $absolute);
     }
 }
-
-// TODO: Maybe refactor this function to better Livewire support
-if (!function_exists('route')) {
-    function route($name, $parameters = [], $absolute = true)
-    {
-        if (str_contains($name, 'livewire')) {
-            return app24_route($name, $parameters, $absolute);
-        }
-
-        return app('url')->route($name, $parameters, $absolute);
-    }
-}

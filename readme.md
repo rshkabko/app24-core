@@ -43,5 +43,8 @@ Instead of using Laravel's standard url or route functions to generate URLs, use
 $url = app24_url('/ui', ['param' => 'value']);
 // This function works similarly to Laravel's route function, but it also appends the session ID to the URL as a query parameter.
 $route = app24_route('route.name', ['param' => 'value']);
+
+// JS version
+options.headers['X-session'] = window.Laravel.sid;
 ```
 In these examples, the resulting URL will include the session ID as a query parameter, ensuring that the session is maintained even when cookies are blocked.
