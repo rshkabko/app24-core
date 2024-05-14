@@ -2,7 +2,9 @@
 
 namespace Flamix\App24Core\Middleware;
 
+use App\Exceptions\App24Exception;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession as IlluminateStartSession;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -88,6 +90,21 @@ class StartSession extends IlluminateStartSession
 
         if ($request->hasHeader('x-session')) {
             return $request->header('x-session');
+        }
+    }
+
+    /**
+     * Extra security check for session.
+     *
+     * @param  Request  $request
+     * @return void
+     * @throws App24Exception
+     */
+    public function checkSession(Request $request)
+    {
+        $session = session();
+        if ($session->has(self::LOCKED_FIELD) && !$this->validate($session, $request)) {
+            throw new App24Exception('Not valid session!');
         }
     }
 }

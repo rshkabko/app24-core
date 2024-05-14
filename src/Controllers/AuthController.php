@@ -7,6 +7,7 @@ use Exception;
 use Bitrix24\Bitrix24;
 use Flamix\App24Core\App24;
 use Flamix\App24Core\Controllers\CacheController;
+use Flamix\App24Core\Middleware\StartSession;
 use Flamix\App24Core\Models\Portals;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -103,6 +104,7 @@ class AuthController extends Controller
     public static function getAuthArray(): array|Request
     {
         $request = request();
+        app(StartSession::class)->checkSession($request);
 
         if ($request->has('auth')) {
             $data = $request->input('auth');
