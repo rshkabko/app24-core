@@ -40,7 +40,7 @@ class Language
      */
     public static function filter(?string $lang): string
     {
-        if (in_array(strtolower($lang), ['en', 'ua', 'pl', 'ru'])) {
+        if (in_array(strtolower($lang), ['en', 'ua', 'ru'])) {
             return strtolower($lang);
         }
 
