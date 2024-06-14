@@ -67,7 +67,7 @@ class Portals extends Model
      */
     public static function getData(int $id = 0): Portals
     {
-        $id = ($id) ?: PortalController::getId();
+        $id = $id ?: PortalController::getId();
         return app(Portals::class)->getByID($id);
     }
 }
