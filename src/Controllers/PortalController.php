@@ -4,16 +4,9 @@ namespace Flamix\App24Core\Controllers;
 
 use App\Exceptions\App24Exception;
 use Flamix\App24Core\Controllers\CacheController;
-use Flamix\App24Core\Controllers\App\SecurityController;
-use Flamix\App24Core\Controllers\App\VersionController;
-use Flamix\App24Core\Models\Bridge;
 use Flamix\App24Core\Models\Portals;
-use Flamix\App24\Actions\SendLeadToOurBitrix24;
-use Flamix\App24Core\Controllers\LicenseController;
-use Flamix\Health\Controllers\HealthController;
-use Illuminate\Http\RedirectResponse;
+use Flamix\B24App\Controllers\PortalController as B24PortalController;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 
 class PortalController extends Controller
@@ -46,22 +39,32 @@ class PortalController extends Controller
     }
 
     /**
-     * Получаем ID текущего портала
+     * Получаем ID текущего портала.
      *
-     * @param string $domain
+     * @param  string|null  $domain
+     * @param  bool  $check_duplicate
      * @return int
      * @throws App24Exception
      */
-    public static function getId(string $domain = ''): int
+    public static function getId(?string $domain = null, bool $check_duplicate = true): int
     {
-        $domain = ($domain) ?: self::getDomain();
-        $id = Portals::getByDomain($domain)->id;
+        $domain = $domain ?: self::getDomain();
+        return Cache::remember(CacheController::key('portal_domain', $domain), 30, function () use ($domain, $check_duplicate) {
+            $app = Portals::select('id')->where('domain', $domain)->where(function ($query) use ($check_duplicate) {
+                $query->where('app_code', config('app.name'));
 
-        if ($id > 0) {
-            return $id;
-        }
+                if ($check_duplicate && method_exists(B24PortalController::class, 'getReverseEnv')) {
+                    $query->orWhere('app_code', B24PortalController::getReverseEnv());
+                }
 
-        throw new App24Exception(trans('app24::error.portal_empty_ID') . $domain);
+                $query->limit(1);
+            });
+
+            $portal_id = $app->value('id');
+            throw_unless($portal_id, App24Exception::class, __('app24::error.security_cant_find_portal_code', ['domain' => $domain, 'code' => config('app.name')]));
+
+            return $portal_id;
+        });
     }
 
     /**
