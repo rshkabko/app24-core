@@ -104,7 +104,8 @@ class StartSession extends IlluminateStartSession
     {
         $session = session();
         if ($session->has(self::LOCKED_FIELD) && !$this->validate($session, $request)) {
-            throw new App24Exception('It looks like your session has expired. Please try again.');
+            $session->flush();
+            throw new App24Exception('It looks like your session has expired. Please reload page and try again.');
         }
     }
 }
