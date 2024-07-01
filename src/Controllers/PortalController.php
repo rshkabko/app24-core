@@ -49,7 +49,7 @@ class PortalController extends Controller
     public static function getId(?string $domain = null, bool $check_duplicate = true): int
     {
         $domain = $domain ?: self::getDomain();
-        return Cache::remember(CacheController::key('portal_domain', $domain), 30, function () use ($domain, $check_duplicate) {
+        return Cache::remember(CacheController::key('portal_domain', $domain), 600, function () use ($domain, $check_duplicate) {
             $app = Portals::select('id')->where('domain', $domain)->where(function ($query) use ($check_duplicate) {
                 $query->where('app_code', config('app.name'));
 
