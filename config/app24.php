@@ -16,6 +16,7 @@ return [
         'secret_force_update' => env('APP_TOKEN_UPDATE_FORCE', false), // Do I need to refresh the token when installing and updating?
     ],
     'cache' => [
-        'domain' => 600, // 10 minutes
+        'portal' => 5, // Portal data
+        'domain' => 600, // Portal ID by Domain
     ]
 ];

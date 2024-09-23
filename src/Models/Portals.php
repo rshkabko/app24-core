@@ -50,7 +50,7 @@ class Portals extends Model
      */
     public static function scopeGetByID(Builder $query, int $id): Portals
     {
-        return Cache::remember(CacheController::key('portal_id', $id), 5, function () use ($query, $id) {
+        return Cache::remember(CacheController::key('portal_id', $id), config('app24.cache.portal', 5), function () use ($query, $id) {
             $data = $query->where('id', $id);
 
             return $data->firstOr(function () use ($id) {
