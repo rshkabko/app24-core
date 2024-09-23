@@ -32,6 +32,9 @@ class InstallController extends Controller
             return ['status' => false, 'error' => 'Auth is empty!'];
         }
 
+        // Disable cache for install
+        config(['app24.cache.domain' => 0]);
+
         // Verify request before install
         $portal = (object)AuthController::getAuthFields($request->all());
         $portal_auth = AuthController::getPortalAuthWithoutCheck($portal);

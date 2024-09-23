@@ -15,4 +15,7 @@ return [
         'deny_type' => env('APP_DENIED_TYPE', false),
         'secret_force_update' => env('APP_TOKEN_UPDATE_FORCE', false), // Do I need to refresh the token when installing and updating?
     ],
+    'cache' => [
+        'domain' => 600, // 10 minutes
+    ]
 ];
