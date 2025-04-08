@@ -18,7 +18,6 @@ class Portals extends Migration
             $table->string('app_code');
             $table->string('app_id')->nullable();
             $table->string('app_secret')->nullable();
-            $table->text('scope');
             $table->integer('user_id');
             $table->string('domain');
             $table->string('member_id');

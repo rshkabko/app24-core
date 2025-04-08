@@ -16,7 +16,6 @@ Add the following to your .env file:
 APP_NAME=company.app24-name
 APP24_ID=app.secret.code
 APP24_SECRET=super_secret_code
-APP24_SCOPE=crm,user,task
 ```
 
 Add to CRON or in Scheduler:

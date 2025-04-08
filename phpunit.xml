@@ -18,7 +18,6 @@
         <env name="APP_NAME" value="flamix.test"/>
         <env name="APP24_ID" value="app_id"/>
         <env name="APP24_SECRET" value="secret"/>
-        <env name="APP24_SCOPE" value="crm,user"/>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_KEY" value="base64:5fkI12gzurmDnuliotLUH72BkHFFDdYk7hZrU7cqSR8="/>
         <env name="BCRYPT_ROUNDS" value="4"/>

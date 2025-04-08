@@ -88,14 +88,7 @@ class User24
     private static function getB24Auth(array $session): Bitrix24
     {
         $obApp24 = new Bitrix24(false);
-        $portal_scope = config('app24.access.scope');
 
-        throw_unless($portal_scope, new App24Exception(trans('app24::error.security_cant_find_portal_code', ['domain' => $session['domain'], 'code' => config('app.name')])));
-
-        $scope = explode(',', $portal_scope);
-        $scope = !is_array($scope) ? [$portal_scope] : $scope; // Always array
-
-        $obApp24->setApplicationScope($scope);
         $obApp24->setApplicationId(config('app24.access.id'));
         $obApp24->setApplicationSecret(config('app24.access.secret'));
 

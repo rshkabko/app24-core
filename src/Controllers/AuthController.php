@@ -45,7 +45,6 @@ class AuthController extends Controller
                 'member_id' => $insert['member_id'],
                 'access_token' => $insert['access_token'],
                 'refresh_token' => $insert['refresh_token'],
-                'scope' => $insert['scope'],
                 'expires' => $insert['expires'] ?? now()->addSeconds(3500),
             ];
         } else {
@@ -75,14 +74,12 @@ class AuthController extends Controller
      */
     public static function getPortalAuthWithoutCheck(object $portalData): Bitrix24
     {
-        $obApp24 = new Bitrix24(false);
-        $scope = self::prepareScope($portalData->scope);
+        $obApp24 = new Bitrix24();
         $app_id = !empty($portalData->app_id) ? $portalData->app_id : config('app24.access.id');
         $app_secret = !empty($portalData->app_secret) ? $portalData->app_secret : config('app24.access.secret');
 
         throw_if(!$app_id || !$app_secret, App24Exception::class, 'Empty APP_ID or APP_SECRET!');
 
-        $obApp24->setApplicationScope($scope);
         $obApp24->setApplicationId($app_id);
         $obApp24->setApplicationSecret($app_secret);
 
@@ -137,7 +134,6 @@ class AuthController extends Controller
             'app_code' => config('app.name'),
             'app_id' => config('app24.access.id'),
             'app_secret' => config('app24.access.secret'),
-            'scope' => config('app24.access.scope'),
 
             'domain' => ($force_data && $domain) ? $domain : PortalController::getDomain(),
 
@@ -177,18 +173,6 @@ class AuthController extends Controller
         if ($domain) {
             session(['DOMAIN' => $domain]);
         }
-    }
-
-    /**
-     * Чтобы поставить скоупы через setApplicationScope($scope), нужно чтобы они всегда были массивом
-     *
-     * @param string $scope
-     * @return array
-     */
-    private static function prepareScope(string $scope): array
-    {
-        $scope = explode(',', $scope);
-        return is_array($scope) ? $scope : [$scope];
     }
 
     /**

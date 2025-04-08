@@ -156,7 +156,6 @@ class App24
         $obApp24->setRedirectUri("https://" . self::getPortalData()->domain . "/rest/");
         $access = $obApp24->getNewAccessToken();
 
-        $access['scope'] = self::getPortalData()->scope;
         $access['domain'] = self::getPortalData()->domain;
 
         // Update auth data
