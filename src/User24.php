@@ -87,7 +87,7 @@ class User24
      */
     private static function getB24Auth(array $session): Bitrix24
     {
-        $obApp24 = new Bitrix24(false);
+        $obApp24 = new Bitrix24();
 
         $obApp24->setApplicationId(config('app24.access.id'));
         $obApp24->setApplicationSecret(config('app24.access.secret'));
