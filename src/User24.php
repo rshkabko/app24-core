@@ -1,15 +1,13 @@
 <?php
-/**
- * Это класс для работы с данными КОНКРЕТНОГО юзера
- * Т.е. есть данные авторизации портала, т.к. это не то же самое!
- */
 
 namespace Flamix\App24Core;
 
 use App\Exceptions\App24Exception;
-use Flamix\App24Core\Controllers\UserController;
 use Bitrix24\Bitrix24;
 
+/**
+ * This class is for working with the data of a SPECIFIC user.
+ */
 class User24
 {
     protected static User24 $instances;
@@ -64,7 +62,7 @@ class User24
             $obUser24->setRedirectUri('https://' . request()->DOMAIN . '/rest/');
             $new_session = $obUser24->getNewAccessToken();
 
-            //TODO: Костыль! Ставим наш домен из сессии. Дело в том, что getNewAccessToken() возвращает 'oauth.bitrix.info'
+            // TODO: Костыль! Ставим наш домен из сессии. Дело в том, что getNewAccessToken() возвращает 'oauth.bitrix.info'
             // как домен, поэтому далее запросы идут туда, а так быть не может
             if ($new_session['domain'] !== $session['domain']) {
                 $new_session['domain'] = $session['domain'];
@@ -110,8 +108,9 @@ class User24
     private static function setSessions(array $session = []): array
     {
         $request = request()->all();
-        if (empty($session) && (!isset($request['DOMAIN']) || !isset($request['member_id'])))
+        if (empty($session) && (!isset($request['DOMAIN']) || !isset($request['member_id']))) {
             throw new App24Exception(trans('app24::error.user24_open_portal_in_b24'), 444);
+        }
 
         if (empty($session)) {
             $session = [
@@ -119,7 +118,7 @@ class User24
                 'member_id' => $request['member_id'],
                 'access_token' => $request['AUTH_ID'],
                 'refresh_token' => $request['REFRESH_ID'],
-                'expires' => time() + (int)$request['AUTH_EXPIRES'],
+                'expires' => time() + intval($request['AUTH_EXPIRES']),
             ];
         }
 
@@ -137,8 +136,9 @@ class User24
     private static function getSessions(): array
     {
         $session = request()->session()->all();
-        if (!isset($session['domain']) || !isset($session['member_id']) || !isset($session['access_token']) || !isset($session['refresh_token']))
+        if (!isset($session['domain']) || !isset($session['member_id']) || !isset($session['access_token']) || !isset($session['refresh_token'])) {
             throw new App24Exception(trans('app24::error.user24_cant_take_session'));
+        }
 
         return $session;
     }
@@ -151,29 +151,5 @@ class User24
     public static function isAuthExpire(): bool
     {
         return time() >= self::$expire;
-    }
-
-    /**
-     * Является ли текущий пользователь админом?
-     * !!Заглушка!!
-     * TODO: Удалить
-     * @return mixed
-     */
-    public static function isAdmin(): bool
-    {
-        throw new \Exception('User24::isAdmin() - DEPRECATED! Please, contact to administrator if you see this error!');
-        return UserController::isAdmin();
-    }
-
-    /**
-     * Получаем ID текущего пользователя
-     * !!Заглушка!!
-     * TODO: Удалить
-     * @return int
-     */
-    public static function getID(): int
-    {
-        throw new \Exception('User24::getID() - DEPRECATED! Please, contact to administrator if you see this error!');
-        return UserController::getID();
     }
 }
