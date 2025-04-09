@@ -153,9 +153,7 @@ class App24
      */
     public static function forceUpdateAndConnectPortal(Bitrix24 $obApp24): Bitrix24
     {
-        $obApp24->setRedirectUri("https://" . self::getPortalData()->domain . "/rest/");
         $access = $obApp24->getNewAccessToken();
-
         $access['domain'] = self::getPortalData()->domain;
 
         // Update auth data

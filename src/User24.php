@@ -59,7 +59,6 @@ class User24
 
         $obUser24 = self::getB24Auth($session);
         if (self::isAuthExpire()) {
-            $obUser24->setRedirectUri('https://' . request()->DOMAIN . '/rest/');
             $new_session = $obUser24->getNewAccessToken();
 
             // TODO: Костыль! Ставим наш домен из сессии. Дело в том, что getNewAccessToken() возвращает 'oauth.bitrix.info'
