@@ -94,6 +94,7 @@ class User24
         $obApp24->setMemberId($session['member_id']);
         $obApp24->setAccessToken($session['access_token']);
         $obApp24->setRefreshToken($session['refresh_token']);
+        $obApp24->setProxyToDomainZone(config('app24.proxy'));
 
         return $obApp24;
     }

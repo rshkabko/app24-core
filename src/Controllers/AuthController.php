@@ -87,6 +87,7 @@ class AuthController extends Controller
         $obApp24->setMemberId($portalData->member_id);
         $obApp24->setAccessToken($portalData->access_token);
         $obApp24->setRefreshToken($portalData->refresh_token);
+        $obApp24->setProxyToDomainZone(config('app24.proxy'));
 
         return $obApp24;
     }
