@@ -9,6 +9,7 @@ return [
     'access' => [
         'id' => env('APP24_ID', false),
         'secret' => env('APP24_SECRET', false),
+        'oauth_server' => env('APP24_OAUTH_SERVER', 'oauth.bitrix24.info'),
         'admin_only' => env('APP_ADMIN_ONLY', 0),
         'access_type' => env('APP_ACCESSED_TYPE', false),
         'deny_type' => env('APP_DENIED_TYPE', false),

@@ -51,6 +51,7 @@ class AuthController extends Controller
             // New portal
             $search['app_code'] = $insert['app_code'];
             $insert['admin_only'] = config('app24.access.admin_only'); // Only admin?
+            $insert['region'] = $insert['region'] ?? null;
         }
 
         $id = intval(app(Portals::class)->updateOrCreate($search, $insert)->id ?? 0);
@@ -82,6 +83,10 @@ class AuthController extends Controller
 
         $obApp24->setApplicationId($app_id);
         $obApp24->setApplicationSecret($app_secret);
+        // TODO: Add oauth_server from request (This will be updated in DB when refresh)
+        if ($portalData->oauth_server ?? null) {
+            $obApp24->setAuthServer($portalData->oauth_server);
+        }
 
         $obApp24->setDomain($portalData->domain);
         $obApp24->setMemberId($portalData->member_id);
@@ -135,6 +140,7 @@ class AuthController extends Controller
             'app_code' => config('app.name'),
             'app_id' => config('app24.access.id'),
             'app_secret' => config('app24.access.secret'),
+            'oauth_server' => $data['oauth_server'] ?? null,
 
             'domain' => ($force_data && $domain) ? $domain : PortalController::getDomain(),
 

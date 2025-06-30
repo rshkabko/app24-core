@@ -40,7 +40,15 @@ class InstallController extends Controller
         $portal_auth = AuthController::getPortalAuthWithoutCheck($portal);
         $user_id = $portal_auth->call('user.current')['result']['ID'] ?? null;
         throw_unless($user_id, App24Exception::class, 'Wrong access! Bad user_id!');
+        $app_info = $portal_auth->call('app.info')['result'] ?? null;
+        $region = preg_replace('/_.*/', '', $app_info['LICENSE'] ?? 'not_found');
+        throw_if(empty($region), App24Exception::class, 'Empty region!');
+        // TODO: Fix this when app will send "server_domain"
+        $oauth_server = $region === 'ru' ? 'oauth.bitrix24.tech' : config('app24.access.oauth_server', 'oauth.bitrix24.info');
+
         $portal->user_id = $user_id;
+        $portal->oauth_server = $oauth_server;
+        $portal->region = $region;
 
         // Install to DB
         $id = app(AuthController::class)->insertOrUpdateOAuth((array)$portal);
