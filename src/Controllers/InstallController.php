@@ -44,7 +44,7 @@ class InstallController extends Controller
         $region = preg_replace('/_.*/', '', $app_info['LICENSE'] ?? 'not_found');
         throw_if(empty($region), App24Exception::class, 'Empty region!');
         // TODO: Fix this when app will send "server_domain"
-        $oauth_server = $region === 'ru' ? 'oauth.bitrix24.tech' : config('app24.access.oauth_server', 'oauth.bitrix24.info');
+        $oauth_server = $region === 'ru' ? 'oauth.bitrix.tech' : config('app24.access.oauth_server', 'oauth.bitrix24.info');
 
         $portal->user_id = $user_id;
         $portal->oauth_server = $oauth_server;
