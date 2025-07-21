@@ -82,10 +82,23 @@ class StartSession extends IlluminateStartSession
         parent::addCookieToResponse($response, $session);
     }
 
+    /**
+     * Get session ID from request.
+     *
+     * @param $request
+     * @param $session
+     * @return void
+     * @throws \Throwable
+     */
     protected function resolveSessionParameter($request, $session)
     {
-        if ($request->has($session->getName())) {
-            return $request->input($session->getName());
+        $session_name = $session->getName();
+
+        // Check if session name is valid! In browser we can not use dots in session name.
+        throw_if(str_contains($session_name, '.'), App24Exception::class, 'Session name should not contain dots. Please check your session configuration (session -> cookie)');
+
+        if ($request->has($session_name)) {
+            return $request->input($session_name);
         }
 
         if ($request->hasHeader('x-session')) {
