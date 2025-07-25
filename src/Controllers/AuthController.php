@@ -51,7 +51,7 @@ class AuthController extends Controller
             // New portal
             $search['app_code'] = $insert['app_code'];
             $insert['admin_only'] = config('app24.access.admin_only'); // Only admin?
-            $insert['region'] = $insert['region'] ?? null;
+            $insert['region'] = $data['region'] ?? null;
         }
 
         $id = intval(app(Portals::class)->updateOrCreate($search, $insert)->id ?? 0);
