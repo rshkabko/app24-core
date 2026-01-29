@@ -47,10 +47,10 @@ class StartSession extends IlluminateStartSession
     /**
      * Overwritten from parent class.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Contracts\Session\Session|mixed
+     * @param  Request  $request
+     * @return Session|mixed
      */
-    public function getSession(\Illuminate\Http\Request $request)
+    public function getSession(Request $request)
     {
         $session = parent::getSession($request);
 
@@ -59,6 +59,7 @@ class StartSession extends IlluminateStartSession
 
             if (!$session->has(self::LOCKED_FIELD)) {
                 $this->lockToUser($session, $request);
+                $this->putSessionToFakeCookie($request, $session);
             } else {
                 // validate session against store IP and user agent hash
                 if (!$this->validate($session, $request)) {
@@ -120,5 +121,20 @@ class StartSession extends IlluminateStartSession
             $session->flush();
             throw new App24Exception('It looks like your session has expired. Please reload page and try again.');
         }
+    }
+
+    /**
+     * Store the session ID into a fake cookie in the request object.
+     *
+     * Hack! Whitout this, the session ID will be regenerated on every request, because it's expected to be in the cookies.
+     *
+     * @param  Request  $request  The current request object.
+     * @param  Session  $session  The session containing the ID to store in the cookie.
+     *
+     * @return void
+     */
+    private function putSessionToFakeCookie(Request $request, Session $session): void
+    {
+        $request->cookies->set($session->getName(), $session->getId());
     }
 }
