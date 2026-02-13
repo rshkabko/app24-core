@@ -13,6 +13,20 @@ class Portals extends Model
 {
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        // Clear cache when updated
+        static::saved(function ($model) {
+            Cache::forget(CacheController::key('portal_id', $model->id));
+        });
+
+        // Clear cache when deleted
+        static::deleted(function ($model) {
+            Cache::forget(CacheController::key('portal_id', $model->id));
+        });
+    }
+
+
     public static function getId(string $domain = ''): int
     {
         // TODO: Remove. Was insert on 01.10.2023
