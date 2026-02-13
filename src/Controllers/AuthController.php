@@ -111,7 +111,7 @@ class AuthController extends Controller
 
         if ($request->has('auth')) {
             $data = $request->input('auth');
-        } else if ($request->has('DOMAIN')) {
+        } else if ($request->has('DOMAIN') || $request->has('domain')) {
             $data = $request;
         } else if (session()->has('DOMAIN')) {
             $data = ['DOMAIN' => session('DOMAIN')];
