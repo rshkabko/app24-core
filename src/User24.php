@@ -95,6 +95,9 @@ class User24
         $obApp24->setRefreshToken($session['refresh_token']);
         $obApp24->setProxyToDomainZone(config('app24.proxy'));
 
+        // Update expires in class (avoide every page request)
+        self::$expire = $session['expires'] ?? 0;
+
         return $obApp24;
     }
 
@@ -122,7 +125,6 @@ class User24
             ];
         }
 
-        self::$expire = $session['expires'] ?? 0;
         session($session);
         return $session;
     }
