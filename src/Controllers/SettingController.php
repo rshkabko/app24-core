@@ -194,8 +194,8 @@ class SettingController extends Controller
      */
     public static function hardInsertOrUpdate(string $key, $value, array $options)
     {
-        $insert = array_merge(['key' => $key, 'value' => $value], $options);
-        return DB::table(self::$table)->updateOrInsert($insert, $options);
+        $conditions = array_merge(['key' => $key], $options);
+        return DB::table(self::$table)->updateOrInsert($conditions, ['value' => $value]);
     }
 
     /**
