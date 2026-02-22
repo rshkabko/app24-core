@@ -69,7 +69,7 @@ class SettingController extends Controller
         event('onBeforeSaveSettings', [&$settings]);
 
         foreach ($settings as $key => $value) {
-            if ($key == 'DOMAIN' || $key == 'api_token') continue;
+            if (in_array($key, ['DOMAIN', 'api_token', '_token', config('session.cookie')])) continue;
 
             $key = self::prepereKeyToSave($key);
             if (is_array($value)) {
