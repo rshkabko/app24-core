@@ -25,6 +25,5 @@ class App24Exception extends Exception
     {
         // TODO: Check if ExceptionController exist - show
         return ['error' => $this->getMessage()];
-        throw new Exception($this->getMessage(), $this->getCode());
     }
 }
