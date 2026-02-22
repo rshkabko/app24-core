@@ -75,7 +75,7 @@ class SettingController extends Controller
             if (is_array($value)) {
                 self::doSavedString($value, $key);
             } else {
-                Setting::set($key, filter_var($value, FILTER_SANITIZE_STRING));
+                Setting::set($key, e($value));
             }
         }
 
@@ -112,7 +112,7 @@ class SettingController extends Controller
         foreach ($array as $key => $value) {
             $key = self::prepereKeyToSave($key);
             if (!is_array($value)) {
-                Setting::set($prev_key . '.' . $key, filter_var($value, FILTER_SANITIZE_STRING));
+                Setting::set($prev_key . '.' . $key, e($value));
             } else {
                 self::doSavedString($value, $prev_key . '.' . $key);
             }
