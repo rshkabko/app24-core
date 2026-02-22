@@ -88,10 +88,10 @@ class StartSession extends IlluminateStartSession
      *
      * @param $request
      * @param $session
-     * @return string
+     * @return string|null
      * @throws \Throwable
      */
-    protected function resolveSessionParameter($request, $session): string
+    protected function resolveSessionParameter($request, $session): ?string
     {
         $session_name = $session->getName();
 
@@ -105,6 +105,8 @@ class StartSession extends IlluminateStartSession
         if ($request->hasHeader('x-session')) {
             return $request->header('x-session');
         }
+
+        return null;
     }
 
     /**
