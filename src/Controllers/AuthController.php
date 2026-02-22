@@ -155,7 +155,7 @@ class AuthController extends Controller
         if (!empty($expires)) {
             if ($expires instanceof Carbon) {
                 $auth['expires'] = $expires;
-            } else if (is_integer(intval($expires))) {
+            } else if (is_numeric(intval($expires))) {
                 $auth['expires'] = Carbon::createFromTimestamp($expires);
             } else {
                 throw new App24Exception("Expires is not Carbon or timestamp! Value: {$expires}");
