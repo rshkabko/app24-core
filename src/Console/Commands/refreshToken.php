@@ -61,8 +61,8 @@ class refreshToken extends Command
         }
 
         // Showing info
-        $this->table(['id', 'user_id', 'app_code', 'expires', 'updated_at'], $result['ERROR'],);
-        $this->table(['id', 'user_id', 'app_code', 'expires', 'updated_at', 'Message'], $result['SUCCESS']);
+        $this->table(['id', 'user_id', 'app_code', 'domain', 'expires', 'updated_at', 'msg'], $result['ERROR']);
+        $this->table(['id', 'user_id', 'app_code', 'domain', 'expires', 'updated_at'], $result['SUCCESS']);
         $this->log('--- END ---', ['success' => $success, 'error' => $error]);
     }
 
