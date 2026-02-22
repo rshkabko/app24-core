@@ -84,14 +84,14 @@ class StartSession extends IlluminateStartSession
     }
 
     /**
-     * Get session ID from request.
+     * Get session ID from request. Validation in Laravel isValidId($id)
      *
      * @param $request
      * @param $session
-     * @return void
+     * @return string
      * @throws \Throwable
      */
-    protected function resolveSessionParameter($request, $session)
+    protected function resolveSessionParameter($request, $session): string
     {
         $session_name = $session->getName();
 
