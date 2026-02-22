@@ -208,7 +208,7 @@ class SettingController extends Controller
     public static function getPortalIdBySettingKey(string $key): int
     {
         $portal_id = DB::table(self::$table)
-            ->where('key', 'like', '%' . $key . '%')
+            ->whereLike('key', $key)
             ->whereRaw('portal_id <> ""')
             ->limit(1)
             ->value('portal_id');
