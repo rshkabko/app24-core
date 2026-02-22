@@ -32,7 +32,6 @@ class ViewsController extends Controller
     public function uninstall(int $portal_id, bool $need_clear_data): bool
     {
         $portal = Portals::find($portal_id);
-        $domain = $portal->domain;
 
         if (!$need_clear_data) return true;
 
