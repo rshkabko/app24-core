@@ -51,10 +51,10 @@ class PortalController extends Controller
         $domain = $domain ?: self::getDomain();
         return Cache::remember(CacheController::key('portal_domain', $domain), config('app24.cache.domain', 600), function () use ($domain, $check_duplicate) {
             $app = Portals::select('id')->where('domain', $domain)->where(function ($query) use ($check_duplicate) {
-                $query->where('app_code', config('app.name'));
-
-                if ($check_duplicate && method_exists(B24PortalController::class, 'getReverseEnv')) {
-                    $query->orWhere('app_code', B24PortalController::getReverseEnv());
+                if ($check_duplicate && method_exists(B24PortalController::class, 'getPosibleEnvs')) {
+                    $query->orWhereIn('app_code', B24PortalController::getPosibleEnvs());
+                } else {
+                    $query->where('app_code', config('app.name'));
                 }
 
                 $query->limit(1);
