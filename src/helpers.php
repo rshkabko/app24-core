@@ -33,6 +33,11 @@ if (! function_exists('app24_url')) {
         $session_cookie_key = config('session.cookie');
         $url = url($path, $parameters, $secure);
 
+        // Avoid duplicating session parameters in the URL
+        if (\Illuminate\Support\Str::containsAll($url, [$session_id, $session_cookie_key])) {
+            return $url;
+        }
+
         if ($session_cookie_key && $session_id && !isset($parameters[$session_cookie_key])) {
             $url .= str_contains($url, '?') ? '&' : '?';
             $url .= "{$session_cookie_key}={$session_id}";
