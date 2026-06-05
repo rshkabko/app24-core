@@ -59,3 +59,10 @@ if (!function_exists('app24_route')) {
         return app('url')->route($name, $parameters, $absolute);
     }
 }
+
+if (!function_exists('app24_back')) {
+      function app24_back(?string $fallback = null)
+      {
+          return redirect(app24_url(url()->previous($fallback ?: url('/'))));
+      }
+  }
