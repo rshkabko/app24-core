@@ -23,15 +23,15 @@ class App24ServiceProvider extends ServiceProvider
             $router->prependMiddlewareToGroup('web', Middleware\StartSession::class); // Session in iframe
 
             // Register grouped Middleware "app24"
-            $router->pushMiddlewareToGroup('app24', 'web'); // Session, Cookie, CFRF is required
-            $router->pushMiddlewareToGroup('app24', Middleware\SaveDomain::class);
-            $router->pushMiddlewareToGroup('app24', Middleware\App24::class);
-            $router->pushMiddlewareToGroup('app24', Middleware\App24Settings::class);
+            $router->prependMiddlewareToGroup('app24', Middleware\App24Settings::class);
+            $router->prependMiddlewareToGroup('app24', Middleware\App24::class);
+            $router->prependMiddlewareToGroup('app24', Middleware\SaveDomain::class);
+            $router->prependMiddlewareToGroup('app24', 'web'); // Session, Cookie, CFRF is required
 
             // Lighten version of app24, some times we can extend it
-            $router->pushMiddlewareToGroup('app24-api', 'web');  // Session, Cookie, CFRF is required
-            $router->pushMiddlewareToGroup('app24-api', Middleware\App24::class);
-            $router->pushMiddlewareToGroup('app24-api', Middleware\App24Settings::class);
+            $router->prependMiddlewareToGroup('app24-api', Middleware\App24Settings::class);
+            $router->prependMiddlewareToGroup('app24-api', Middleware\App24::class);
+            $router->prependMiddlewareToGroup('app24-api', 'web');  // Session, Cookie, CFRF is required
 
             // Register grouped Middleware "user24". Some times we need use app without user
             $router->pushMiddlewareToGroup('user24', 'app24'); // Need app24 middleware by default
