@@ -68,9 +68,11 @@ class SettingController extends Controller
         $settings = $request->all();
         event('onBeforeSaveSettings', [&$settings]);
 
+        $has_changes = false;
         foreach ($settings as $key => $value) {
             if (in_array($key, ['DOMAIN', 'api_token', '_token', config('session.cookie')])) continue;
 
+            $has_changes = true;
             $key = self::prepereKeyToSave($key);
             if (is_array($value)) {
                 self::doSavedString($value, $key);
@@ -82,6 +84,12 @@ class SettingController extends Controller
         // Logging...
         if (function_exists('portalLog')) {
             portalLog(trans('app24::error.log_setting_saving'), $settings);
+        }
+
+        // An empty payload (only DOMAIN/api_token/session fields) must not touch
+        // the store: saving without a single set() wipes all portal settings.
+        if (!$has_changes) {
+            return ['data' => $request->all(), 'status' => 'success', 'msg' => trans('app24::error.setting_saved')];
         }
 
         setting()->save();
