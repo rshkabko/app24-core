@@ -2,6 +2,7 @@
 
 namespace Flamix\App24Core;
 
+use Flamix\Settings\SettingsManager;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
 use Flamix\App24Core\Console\Commands as App24Commands;
@@ -10,6 +11,9 @@ class App24ServiceProvider extends ServiceProvider
 {
     public function boot(Router $router)
     {
+        // Portal 0 until setPortal(): a store without a scope reads and deletes rows of all portals.
+        $this->app->scoped(SettingsManager::class, fn ($app) => tap(new SettingsManager($app), fn ($manager) => $manager->setExtraColumns(['portal_id' => 0])));
+
         // Middleware: App24
         $router->aliasMiddleware('App24', Middleware\App24::class);
         $router->aliasMiddleware('App24Settings', Middleware\App24Settings::class);
