@@ -14,6 +14,9 @@ class User24
     protected static Bitrix24 $obUser24;
     protected static int $expire = 0;
 
+    /** Seconds before the end when the token is refreshed, like App24 does for the portal. */
+    private const REFRESH_BEFORE = 300;
+
     /**
      * Singleton.
      *
@@ -59,16 +62,12 @@ class User24
 
         $obUser24 = self::getB24Auth($session);
         if (self::isAuthExpire()) {
-            $new_session = $obUser24->getNewAccessToken();
-
-            // TODO: Костыль! Ставим наш домен из сессии. Дело в том, что getNewAccessToken() возвращает 'oauth.bitrix.info'
-            // как домен, поэтому далее запросы идут туда, а так быть не может
-            if ($new_session['domain'] !== $session['domain']) {
-                $new_session['domain'] = $session['domain'];
+            try {
+                return self::getB24Auth(self::refreshSession($obUser24));
+            } catch (\Throwable $e) {
+                // The refresh is early: until the real end the old token still works.
+                throw_if(time() >= self::$expire, $e);
             }
-
-            self::setSessions($new_session);
-            return self::getB24Auth($new_session);
         }
 
         return $obUser24;
@@ -95,10 +94,38 @@ class User24
         $obApp24->setRefreshToken($session['refresh_token']);
         $obApp24->setProxyToDomainZone(config('app24.proxy'));
 
+        // Our clock counts from the request, Bitrix24 from the issue: a token may die earlier than we expect.
+        $obApp24->setOnExpiredToken(function (Bitrix24 $b24): bool {
+            $session = self::refreshSession($b24);
+            $b24->setAccessToken($session['access_token']);
+            $b24->setRefreshToken($session['refresh_token']);
+
+            return true;
+        });
+
         // Update expires in class (avoide every page request)
         self::$expire = $session['expires'] ?? 0;
 
         return $obApp24;
+    }
+
+    /**
+     * Обновляем токен пользователя и сохраняем его в сессию
+     *
+     * @param Bitrix24 $obUser24
+     * @return array
+     * @throws App24Exception
+     */
+    private static function refreshSession(Bitrix24 $obUser24): array
+    {
+        $session = $obUser24->getNewAccessToken();
+
+        // TODO: Костыль! Ставим наш домен. Дело в том, что getNewAccessToken() возвращает 'oauth.bitrix.info'
+        // как домен, поэтому далее запросы идут туда, а так быть не может
+        $session['domain'] = $obUser24->getDomain();
+        self::$expire = intval($session['expires'] ?? 0);
+
+        return self::setSessions($session);
     }
 
     /**
@@ -152,6 +179,6 @@ class User24
      */
     public static function isAuthExpire(): bool
     {
-        return time() >= self::$expire;
+        return time() >= self::$expire - self::REFRESH_BEFORE;
     }
 }
